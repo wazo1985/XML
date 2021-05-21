@@ -1,0 +1,1876 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="Beckhoff Automation GmbH" productName="TwinCAT PLC Control" productVersion="3.5.13.20" creationDateTime="2021-05-21T13:13:46.7956671" />
+  <contentHeader name="LorochCxPlc_1" modificationDateTime="2021-05-21T13:13:46.7996557">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous>
+      <pou name="Tk_MeasuringWithLB" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="CheckPlausibilityActive">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Variable  to check for plausibility</xhtml>
+              </documentation>
+            </variable>
+            <variable name="XAxisVelocityMeasurValue">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="fMeanToothPitchDegree">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="TeethNumber">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">UINT Nominal Teeth Number </xhtml>
+              </documentation>
+            </variable>
+            <variable name="StartAutoPostionningTK">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Start The SFC</xhtml>
+              </documentation>
+            </variable>
+            <variable name="XPositionAfterAutoTouch">
+              <type>
+                <LREAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> X  position after auto touching </xhtml>
+              </documentation>
+            </variable>
+            <variable name="YPositionAfterAutoTouch">
+              <type>
+                <LREAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Y position after auto touching </xhtml>
+              </documentation>
+            </variable>
+            <variable name="YPositonUpPosition">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="YDwnPosition">
+              <type>
+                <LREAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Y Down Position </xhtml>
+              </documentation>
+            </variable>
+            <variable name="fXPosToothFaceTouchPosGrd">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="Reset">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="SawBladeDiameter">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="VarioToothActive">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="NumberOfTeethPerShape">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="NumberOfShape">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="DifferenceMaxAllowed">
+              <type>
+                <REAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Value bigger than this value will cause Error and Stop</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="Done">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="Busy">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="ActualStep">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="ErrorOut">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="ToothCount">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> actual tooth count during process </xhtml>
+              </documentation>
+            </variable>
+            <variable name="XStartPos">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="ActualToothTemp">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="SfcPositioningAutoTouch">
+              <type>
+                <derived name="FB_SUBFUNC_SEQ_CONTROL" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> FB sfc </xhtml>
+              </documentation>
+            </variable>
+            <variable name="XStartPosition">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="AxisState">
+              <type>
+                <derived name="E_StateMachineAxis" />
+              </type>
+            </variable>
+            <variable name="StepNew">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="PitchXPositionsArray">
+              <type>
+                <array>
+                  <dimension lower="1" upper="999" />
+                  <baseType>
+                    <derived name="ST_AutoTouchForTK" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> ToDo WZ: Arrays start alway on zero !!! </xhtml>
+              </documentation>
+            </variable>
+            <variable name="ToothPitchArray">
+              <type>
+                <array>
+                  <dimension lower="1" upper="999" />
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="ArrayCounter">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="XPositionAfterAutoTouchTK">
+              <type>
+                <LREAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> XAxis position after teh test of All teeth  </xhtml>
+              </documentation>
+            </variable>
+            <variable name="XAxisNextPos">
+              <type>
+                <LREAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Next X Position </xhtml>
+              </documentation>
+            </variable>
+            <variable name="XAxisTempPos">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="ToothPitch">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="TeethCounter">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="TeethCounterPhasing">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="TeethCounterLast">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="StepAction">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> temp Step action sfc </xhtml>
+              </documentation>
+            </variable>
+            <variable name="StepActionImPulse">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> temp Step action impuls sfc </xhtml>
+              </documentation>
+            </variable>
+            <variable name="Diff_First_Last_Tooth">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="CircumferenceSawBlade">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="ToothPitchMM">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="LargestDeviationMM">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="LargestDeviationDEG">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="CounterVario">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Counter number of teeth per Group</xhtml>
+              </documentation>
+            </variable>
+            <variable name="CounterShapeNumber">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Counter Shape Number</xhtml>
+              </documentation>
+            </variable>
+            <variable name="MaxToothPitchVario">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="I">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">3 Int Variable to use with Arrays</xhtml>
+              </documentation>
+            </variable>
+            <variable name="J">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">3 Int Variable to use with Arrays</xhtml>
+              </documentation>
+            </variable>
+            <variable name="K">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">3 Int Variable to use with Arrays</xhtml>
+              </documentation>
+            </variable>
+            <variable name="VarioToothPitchDifference">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="FBTkPositionningResults">
+              <type>
+                <derived name="FB_Tk_PositionningResults" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">  Tooth Pitch Results</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stTimeStruct">
+              <type>
+                <derived name="TIMESTRUCT" />
+              </type>
+            </variable>
+            <variable name="stTimeStartM">
+              <type>
+                <derived name="TIMESTRUCT" />
+              </type>
+            </variable>
+            <variable name="stTimeEndM">
+              <type>
+                <derived name="TIMESTRUCT" />
+              </type>
+            </variable>
+            <variable name="FileNameExtension">
+              <type>
+                <derived name="T_MaxString" />
+              </type>
+            </variable>
+            <variable name="fbGetTime">
+              <type>
+                <derived name="NT_GetTime" />
+              </type>
+            </variable>
+            <variable name="bExecute">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Start Result </xhtml>
+              </documentation>
+            </variable>
+            <variable name="RTrigStartWriting">
+              <type>
+                <derived name="R_TRIG" />
+              </type>
+            </variable>
+            <variable name="WarningPlausibility">
+              <type>
+                <derived name="FB_SUBFUNC_MESSAGE" />
+              </type>
+            </variable>
+            <variable name="WarningUnexpectedTouch">
+              <type>
+                <derived name="FB_SUBFUNC_MESSAGE" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Unexpected Touching when Y Axis is Moving Dwn</xhtml>
+              </documentation>
+            </variable>
+            <variable name="TonWaitingCsvFile">
+              <type>
+                <derived name="TON" />
+              </type>
+            </variable>
+            <variable name="WaitingCsvFile">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="ValueNotPlausible">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="RTrigNotPlausible">
+              <type>
+                <derived name="R_TRIG" />
+              </type>
+            </variable>
+            <variable name="TonDuration">
+              <type>
+                <derived name="TON" />
+              </type>
+            </variable>
+            <variable name="StartTonDuration">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="Duration">
+              <type>
+                <TIME />
+              </type>
+            </variable>
+            <variable name="sValueNotPlausible">
+              <type>
+                <string />
+              </type>
+            </variable>
+            <variable name="fXTouchVelo">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="ValueMM2GradForNextPos">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="lrTeethDiffMeasuredTemp">
+              <type>
+                <array>
+                  <dimension lower="0" upper="999" />
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="TeethCounterTemp">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="TeethCountLastSort">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="DeviationMMValueNotPlausible">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="TeethCounterValueNotPlausible">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="DeviationMMValueMin">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="DeviationMMValueMax">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="TeethCounterValueMin">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="TeethCounterValueMax">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="Move2Left">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="Move2LeftCCW">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="CounterCba">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="RTrigSawBladeIsDetected">
+              <type>
+                <derived name="R_TRIG" />
+              </type>
+            </variable>
+            <variable name="ZposAfterLB">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="RTrigNextStep">
+              <type>
+                <derived name="R_TRIG" />
+              </type>
+            </variable>
+            <variable name="Next">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="NextPosx1">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="NextPosx2">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="TonWaitingX">
+              <type>
+                <derived name="TON" />
+              </type>
+            </variable>
+            <variable name="bTonWaitingX">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="TonWaitingY">
+              <type>
+                <derived name="TON" />
+              </type>
+            </variable>
+            <variable name="bTonWaitingY">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <actions>
+          <action name="ACT_TIME">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">fbGetTime(	NETID		:= 	'',			(* Beckhoff Rechner '10.22.2.7.1.1' mit eingestellter Zeit, anstatt Maschinen-PC *)
+			START		:= 	( NOT fbGetTime.BUSY ) AND ( NOT fbGetTime.START ),
+			TMOUT		:= 	DEFAULT_ADS_TIMEOUT,
+			BUSY		=&gt;	 ,
+			ERR		=&gt; 	,
+			ERRID		=&gt;	,
+			TIMESTR	=&gt; 	stTimestruct );</xhtml>
+              </ST>
+            </body>
+            <addData>
+              <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                <ObjectId>f8d9bb14-7b8f-45f5-bc00-b51d0a6538c0</ObjectId>
+              </data>
+            </addData>
+          </action>
+        </actions>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">(*###############################################################################################*)
+
+
+		IF	Reset OR
+			MachineCtrl.state.MachineState.error.IsActive
+			THEN
+				StartAutoPostionningTK:=	FALSE;
+				ErrorOut				:=	FALSE;
+				Duration				:=	TIME#0s;
+				StepNew				:=	0;
+				Done				:=	FALSE;
+
+				Busy				:=	FALSE;
+
+				ErrorOut				:=	FALSE;
+
+				bExecute			:=	FALSE;
+
+				StartTonDuration		:=	FALSE;
+
+				ValueNotPlausible	:=	FALSE;
+
+				TonDuration(IN:= FALSE , PT:=T#0s , Q=&gt; , ET=&gt; );
+
+				ValueNotPlausible	:=	FALSE;
+
+				TonWaitingCsvFile(IN:= FALSE , PT:=T#0s , Q=&gt; , ET=&gt; );
+				WaitingCsvFile		:=	FALSE;
+
+				CounterShapeNumber	:=	0;
+				RTrigStartWriting(CLK:= FALSE , Q=&gt; );
+				CounterCba	:=	1;
+		END_IF;
+
+
+		SfcPositioningAutoTouch(	StepNew				:=	StepNew ,
+								Reset				:= 	Reset,
+								Step				=&gt; 	ActualStep ,
+								StepAction			=&gt;	StepAction ,
+								StepActionImPulse	=&gt;	StepActionImPulse);
+
+
+	Next	:=	TRUE;(*TRUE;*)
+
+
+	RTrigNextStep(CLK:= MachineCtrl.Peripheral.ExternalControl.ConfirmTouchpos , Q=&gt; );
+
+	ValueNotPlausible	 := FALSE;
+
+		TonDuration(	IN	:= 	StartTonDuration ,
+					PT	:=	TIME#1H );
+
+		(*Reset The SFC*)
+		IF	Reset OR
+			MachineCtrl.state.MachineState.error.IsActive
+			THEN
+				StartAutoPostionningTK:=	FALSE;
+				ErrorOut				:=	FALSE;
+				Duration				:=	TIME#0s;
+				StepNew				:=	0;
+				Done				:=	FALSE;
+
+				Busy				:=	FALSE;
+
+				ErrorOut				:=	FALSE;
+
+				bExecute			:=	FALSE;
+
+				StartTonDuration		:=	FALSE;
+
+				ValueNotPlausible	:=	FALSE;
+
+				TonDuration(IN:= FALSE , PT:=T#0s , Q=&gt; , ET=&gt; );
+
+				ValueNotPlausible	:=	FALSE;
+
+				TonWaitingCsvFile(IN:= FALSE , PT:=T#0s , Q=&gt; , ET=&gt; );
+				WaitingCsvFile		:=	FALSE;
+
+				CounterShapeNumber	:=	0;
+				RTrigStartWriting(CLK:= FALSE , Q=&gt; );
+				CounterCba	:=	1;
+				bTonWaitingX	:=	FALSE;
+				bTonWaitingY	:=	FALSE;
+				TonWaitingX(IN:=FALSE , PT:=TIME#1s , Q=&gt; , ET=&gt; );
+				TonWaitingY(IN:=FALSE , PT:=TIME#1s , Q=&gt; , ET=&gt; );
+		END_IF;
+
+
+
+	TonWaitingY(IN:=bTonWaitingY , PT:=TIME#200ms , Q=&gt; , ET=&gt; );
+
+	TonWaitingX(IN:=bTonWaitingX , PT:=TIME#1s , Q=&gt; , ET=&gt; );
+
+	(*########################################################*)
+
+	IF
+		( MachineCtrl.Peripheral.ExternalControl.StopSwitch.FTrig AND
+		(StepNew &gt;10))
+		THEN
+			StepNew		:=	130; (*126;*)
+	END_IF;
+
+
+	(*########################################################*)
+
+
+	(*  ToDo WZ: Not necessary in the final version - has to be deleted *)
+	TonWaitingCsvFile(IN:= WaitingCsvFile , PT:=T#1s , Q=&gt; , ET=&gt; );
+
+
+	RTrigSawBladeIsDetected(CLK:=MachineCtrl.State.LightBarrier.SawBladeIsDetected  , Q=&gt; );
+
+
+	CASE	SfcPositioningAutoTouch.Step		OF
+
+			(*Reset All Variables *)
+		
+			0:
+					(* Reset y-axis *)
+					AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdPowerOn			:=	FALSE;
+					AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut		:=	FALSE;
+					AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdCamming			:=	FALSE;
+					(* Reset Z-axis *)
+					AxisCtrl[AxisNo.ZAxis].Command.OperationMode.CmdPowerOn			:=	FALSE;
+					AxisCtrl[AxisNo.ZAxis].Command.OperationMode.CmdMoveAbsolut		:=	FALSE;
+					AxisCtrl[AxisNo.ZAxis].Command.OperationMode.CmdCamming			:=	FALSE;
+					Done				:=	FALSE;
+					Busy				:=	FALSE;
+					ErrorOut				:=	FALSE;
+					bExecute			:=	FALSE;;
+					ValueNotPlausible	:=	FALSE;
+					ErrorOut				:=	FALSE;
+
+					DeviationMMValueMin		:=	0;
+					TeethCounterValueMin		:=	0;
+					DeviationMMValueMax		:=	0;
+					TeethCounterValueMax	:=	0;
+					bTonWaitingY			:=	FALSE;
+
+					FOR	ArrayCounter := 1 TO 999 BY 1
+							DO
+								AxisPhasingCAM.lrTeethDiff[ArrayCounter]				:=	0;
+								lrTeethDiffMeasuredTemp[ArrayCounter]					:=	0;
+
+								PitchXPositionsArray[ArrayCounter].CalcToothPitchDEG		:=	0;
+								PitchXPositionsArray[ArrayCounter].XPosition				:=	0;
+								PitchXPositionsArray[ArrayCounter].CalcToothPitchMM		:=	0;
+								PitchXPositionsArray[ArrayCounter].DeviationDEG			:=	0;
+								PitchXPositionsArray[ArrayCounter].DeviationMM			:=	0;
+					END_FOR;
+
+					(*Start The Sfc*)
+					IF	StartAutoPostionningTK AND
+						( ArrayCounter &gt;= TO_INT(TeethNumber))
+						THEN
+							ErrorOut				:=	FALSE;
+							StepNew				:=	10;
+							Busy				:=	TRUE;
+							ArrayCounter			:=	1;
+							TeethCounter			:=	0;
+							CounterVario			:=	0;
+							CounterShapeNumber	:=	0;
+							bExecute			:=	FALSE;
+							RTrigStartWriting(CLK:= FALSE , Q=&gt; );
+					END_IF;
+		
+			(*  Waiting For User Interaction *)
+
+			10:
+				IF	StepAction AND
+					(NOT StepActionImPulse) AND
+					StartAutoPostionningTK
+					THEN
+							CircumferenceSawBlade	:=	SawBladeDiameter  * PI;
+					(* ????  ToDo WZ: where is StepActionImPulse and StepAction in this step ???? + individual comments for actual step *)
+						IF	MachineCtrl.Peripheral.ExternalControl.ConfirmTouchpos  OR TRUE
+							THEN
+								StepNew			:=	15;		(* Wait until Light Barrier Free*)
+								IF	TeethNumber &lt;&gt; 0
+									THEN
+										ToothPitch		:=	360/UINT_TO_LREAL (TeethNumber);	(* DEG *)
+									ELSE
+										ToothPitch		:=	2;
+								END_IF;
+	
+								IF	(CircumferenceSawBlade = 0)
+									THEN
+										CircumferenceSawBlade	:=	100;
+								END_IF;
+	
+
+								ToothPitchMM			:=	ToothPitch/(360/CircumferenceSawBlade);
+						END_IF;
+			
+						ErrorOut				:=	FALSE;
+						bTonWaitingY		:=	FALSE;
+				END_IF;
+
+	(*-------------------------------------------------------Check If The Light Barrier Free-----------------------------------------------------------*)
+			15 :
+			IF	(NOT MachineCtrl.State.LightBarrier.SawBladeIsDetected)
+				THEN
+					StepNew		:=	17;
+			END_IF;
+	(*-----------------------------------------------------------------Wati For Next Step------------------------------------------------------------------*)
+			17:
+				(*Transition*)
+				IF	(RTrigNextStep.Q OR
+					Next ) AND
+					StartAutoPostionningTK
+					THEN
+						StepNew		:=	181;
+				END_IF;
+
+			181:
+
+				IF	StepActionImPulse
+					THEN
+						MachineCtrl.Peripheral.LightBarrier.AirPurge.CmdOn		:=	TRUE;
+						MachineCtrl.Peripheral.LightBarrier.AirPurge.CmdOff		:=	FALSE;
+				END_IF;
+
+				(*Transition*)
+
+				IF	StepAction AND
+					(NOT StepActionImPulse) AND
+					MachineCtrl.State.LightBarrier.AirPurge.InWorkPosition
+					THEN
+						StepNew		:=   18;
+				END_IF;
+
+	(*######################################################################################################*)
+			18:	(*Action*)
+				IF	StepActionImPulse
+					THEN
+						(* X-axis *)
+						AxisState														:=	STATE_WAIT_NEWOPERATION;
+						AxisCtrl[AxisNo.XAxis].Command.OperationMode.CmdPowerOn			:=	TRUE;
+						AxisCtrl[AxisNo.XAxis].Command.OperationMode.CmdMoveAbsolut		:=	FALSE;
+						AxisCtrl[AxisNo.XAxis].Command.ExternalControl.Override				:=	100;
+						AxisCtrl[AxisNo.XAxis].Command.OperationMode.CmdJog				:=	TRUE;
+						AxisCtrl[AxisNo.XAxis].Command.NominalValue.VeloJog				:=	XAxisVelocityMeasurValue ;
+						AxisCtrl[AxisNo.XAxis].Command.ExternalControl.StartPlus				:=	FALSE;
+						AxisCtrl[AxisNo.XAxis].Command.ExternalControl.StartMinus				:=	TRUE;
+						(*.....................................................*)
+						(* Reset y-axis *)
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdPowerOn			:=	FALSE;
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut		:=	FALSE;
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdCamming			:=	FALSE;
+				END_IF;
+				(*Transition*)
+				IF	StepAction AND
+					(NOT StepActionImPulse) AND
+					Axis[AxisNo.XAxis].Status.Moving
+					THEN
+						StepNew		:=	20;		(*Z- Axis Moves Up *)
+				END_IF;
+
+			(*-----------------------------------------------------Wait for The first Impulse----------------------------------------------------*)
+			20:	(*Action*)
+			IF	RTrigSawBladeIsDetected.Q
+				THEN
+					XStartPosition		:=		Axis[AxisNo.XAxis].NcToPlc.ActPos ;
+
+					StepNew			:=	30;
+			END_IF;
+			(*--------------------------------------------------Detecting Rising Edges and Calculation of Teeth Pitch-----------------------*)
+			30:
+
+			IF	RTrigSawBladeIsDetected.Q
+				THEN
+					TeethCounter													:=	TeethCounter + 1;		(*Incrementation Of Counter After Each Touch*)
+					PitchXPositionsArray[TeethCounter].XPosition						:=	Axis[AxisNo.XAxis].NcToPlc.ActPos;;
+					AxisCtrl[AxisNo.XAxis].Command.OperationMode.CmdMoveAbsolut	:=	FALSE;
+
+						IF	TeethCounter = 1
+							THEN
+								ToothPitchArray[1]									:=	Axis[AxisNo.XAxis].NcToPlc.ActPos ;
+								PitchXPositionsArray[1].CalcToothPitchDEG			:=	Axis[AxisNo.XAxis].NcToPlc.ActPos - XStartPosition ;
+								PitchXPositionsArray[1].CalcToothPitchMM			:=	PitchXPositionsArray[1].CalcToothPitchDEG/(360/CircumferenceSawBlade);
+
+								PitchXPositionsArray[1].DeviationDEG				:=	ABS(PitchXPositionsArray[1].CalcToothPitchDEG) - ToothPitch;
+								PitchXPositionsArray[1].DeviationMM					:=	ABS(PitchXPositionsArray[1].CalcToothPitchMM) - ToothPitchMM;
+
+						END_IF;
+
+					IF	TeethCounter &gt;=2
+						THEN
+							ToothPitchArray[TeethCounter]							:=	Axis[AxisNo.XAxis].NcToPlc.ActPos;;
+							PitchXPositionsArray[TeethCounter].CalcToothPitchDEG	:=	(PitchXPositionsArray[TeethCounter].XPosition- PitchXPositionsArray[TeethCounter-1].XPosition);
+							PitchXPositionsArray[TeethCounter].CalcToothPitchMM		:=	PitchXPositionsArray[TeethCounter].CalcToothPitchDEG/(360/CircumferenceSawBlade);
+
+							PitchXPositionsArray[TeethCounter].DeviationDEG			:=	 ABS(PitchXPositionsArray[TeethCounter].CalcToothPitchDEG) - ToothPitch;
+							PitchXPositionsArray[TeethCounter].DeviationMM			:=	ABS(PitchXPositionsArray[TeethCounter].CalcToothPitchMM) - ToothPitchMM;
+
+							IF	ValueNotPlausible
+								THEN
+									sValueNotPlausible							:=	LREAL_TO_STRING(PitchXPositionsArray[TeethCounter].DeviationMM );
+									DeviationMMValueNotPlausible					:=	PitchXPositionsArray[TeethCounter].DeviationMM;
+									TeethCounterValueNotPlausible					:=	TeethCounter;
+							END_IF;
+
+					END_IF;
+
+					(* store min / max deviation *)
+						IF	( PitchXPositionsArray[TeethCounter].DeviationMM &lt; DeviationMMValueMin )
+							THEN
+								DeviationMMValueMin		:=	PitchXPositionsArray[TeethCounter].DeviationMM;
+								TeethCounterValueMin		:=	TeethCounter;
+						END_IF;
+
+						IF	( PitchXPositionsArray[TeethCounter].DeviationMM &gt; DeviationMMValueMax )
+							THEN
+								DeviationMMValueMax		:=	PitchXPositionsArray[TeethCounter].DeviationMM;
+								TeethCounterValueMax	:=	TeethCounter;
+						END_IF;
+
+						IF	TeethCounter &gt;= TO_UINT(TeethNumber)
+							THEN
+								(* StepNew		:=	110;*)
+									AxisCtrl[AxisNo.XAxis].Command.ExternalControl.StartMinus				:= FALSE;
+									TeethCounterLast			:=	TeethCounter;
+									StepNew					:=	175; 	(* sort teeth for phasing *)
+									TeethCounter				:=	1;
+									TeethCounterPhasing		:=	0;
+						END_IF;
+				END_IF;
+
+			(*------------------------------------------------------------------------------ buffer tooth pitches for check ---------------------------------------------------*)
+			175:
+					(*Action*)
+					IF	StepActionImPulse
+						THEN
+								MachineCtrl.Peripheral.LightBarrier.AirPurge.CmdOff	:=	TRUE;
+								TeethCounterLast			:=	TeethCounterLast;
+								TeethCountLastSort		:= TO_INT(	TeethCounterLast);
+								TeethCounter				:=	1;
+								(* copy tooth pitch for phasing *)
+								(* Phasing *)
+								FOR 	TeethCounterTemp :=TO_INT( TeethCounter) TO TO_INT( TeethCounterLast)
+										DO
+											lrTeethDiffMeasuredTemp[TeethCounterTemp]	:=	PitchXPositionsArray[TeethCounterTemp].DeviationDEG;
+								END_FOR;
+					END_IF;
+
+					(*Transition*)
+					IF	StepAction AND
+					    	( NOT StepActionImpulse ) AND
+						( TeethCounterTemp = ( TO_INT(TeethCounterLast) + 1) )
+						THEN
+							StepNew					:=	180;	(* end *)
+
+							TeethCounter				:=	2;
+							TeethCountLastSort		:=	TeethCountLastSort - 1;
+							TeethCounterPhasing		:=	0;
+					END_IF;
+
+			(*------------------------------------------------------------------------------ sort teeth for phasing ---------------------------------------------------------------*)
+			180:
+					(*Action*)
+					IF	StepActionImPulse
+						THEN
+								(* copy tooth pitch for phasing - cw and ccw *)
+
+								(* cw *)
+									AxisPhasingCAM.lrTeethDiffDirection.lrTeethDiff_CW[0]	:=	0;
+	
+									FOR	TeethCounterTemp	:=	1 TO TO_INT( TeethCounterLast)
+											DO
+												AxisPhasingCAM.lrTeethDiffDirection.lrTeethDiff_CW[TeethCounterTemp]	:=	PitchXPositionsArray[TeethCounterTemp].DeviationDEG * (-1.0);
+									END_FOR;
+	
+								(* ccw *)
+									TeethCountLastSort									:=	TO_INT(TeethCounterLast);
+									AxisPhasingCAM.lrTeethDiffDirection.lrTeethDiff_CCW[0]	:=	0;
+
+									FOR	TeethCounterTemp	:=	1 TO TO_INT( TeethCounterLast)
+											DO
+												AxisPhasingCAM.lrTeethDiffDirection.lrTeethDiff_CCW[TeethCounterTemp]		:=	PitchXPositionsArray[TeethCountLastSort].DeviationDEG * (-1.0);
+												TeethCountLastSort													:=	TeethCountLastSort - 1;
+									END_FOR;
+
+								IF	( MachineCtrl.ProcessTemp.ActualJobData.OperatingDirection.Following =  OperatingDirection.CounterClockWise  )
+									THEN
+										(* CounterClockWise *)
+										Move2Left			:=	FALSE;
+										Move2LeftCCW		:=	TRUE;
+
+
+										IF	( NOT Move2Left ) AND
+											( NOT Move2LeftCCW )
+											THEN
+												(* copy tooth pitch for phasing *)
+												(* Phasing *)
+												TeethCounterTemp			:=	1;
+												TeethCounterPhasing			:=	0;
+												AxisPhasingCAM.lrTeethDiff[0]	:=	0;
+
+												FOR	TeethCounterTemp	:=	1 TO  TO_INT(TeethCounterLast)
+														DO
+															AxisPhasingCAM.lrTeethDiff[TeethCounterTemp]	:=	PitchXPositionsArray[TeethCounterTemp].DeviationDEG * (-1.0);
+												END_FOR;
+
+												(* no positioning for x-startpos necessary *)
+												AxisPhasingCAM.XAxisStartPosOffsetDEGTK			:=	0;
+											ELSE
+												IF	Move2Left
+													THEN
+														(* move  tooth pitch 2 left for phasing *)
+														(* Phasing *)
+														TeethCounterTemp		:=	1;
+														TeethCounterPhasing		:=	3;
+														REPEAT
+																AxisPhasingCAM.lrTeethDiff[TeethCounterPhasing]	:=	PitchXPositionsArray[TeethCounterTemp].DeviationDEG * (-1.0);
+																TeethCounterPhasing							:=	TeethCounterPhasing + 1;
+																(*TeethCounter									:=	TeethCounter + 1;*)
+																TeethCounterTemp							:=	TeethCounterTemp + 1;
+														UNTIL	( TeethCounterTemp &gt; ( TO_INT(TeethCounterLast)-2) )
+														END_REPEAT;
+
+														AxisPhasingCAM.lrTeethDiffLastEntry		:=TO_UINT(	TeethCountLastSort);
+														(* cam xchange / phasing starts on array index 1 *)
+														AxisPhasingCAM.lrTeethDiff[0]			:=	0;
+														AxisPhasingCAM.lrTeethDiff[1]			:=	PitchXPositionsArray[TeethCounterLast-1].DeviationDEG * (-1.0);
+														AxisPhasingCAM.lrTeethDiff[2]			:=	PitchXPositionsArray[TeethCounterLast].DeviationDEG * (-1.0);
+
+														(* no positioning for x-startpos necessary *)
+														AxisPhasingCAM.XAxisStartPosOffsetDEGTK			:=	(PitchXPositionsArray[TeethCounterLast-1].CalcToothPitchDEG * (-1.0)) + (PitchXPositionsArray[TeethCounterLast].CalcToothPitchDEG * (-1.0));
+												END_IF;
+
+												IF	Move2LeftCCW
+													THEN
+														(* move  tooth pitch 2 left for phasing *)
+														(* Phasing *)
+														TeethCounterTemp		:=	TO_INT( TeethCounterLast) - 2;
+														TeethCounterPhasing		:=	1;
+														REPEAT
+																(*AxisPhasingCAM.lrTeethDiff[TeethCounterPhasing]	:=	PitchXPositionsArray[TeethCounterTemp].DeviationDEG * (-1.0);*)
+																AxisPhasingCAM.lrTeethDiff[TeethCounterPhasing]	:=	PitchXPositionsArray[TeethCounterTemp].DeviationDEG;
+																TeethCounterPhasing							:=	TeethCounterPhasing + 1;
+																(*TeethCounter									:=	TeethCounter + 1;*)
+																TeethCounterTemp							:=	TeethCounterTemp - 1;
+														UNTIL	( TeethCounterTemp &lt; 1 ) (*( TeethCounterTemp &gt; (TeethCounterLast - 2) )*)
+														END_REPEAT;
+
+														AxisPhasingCAM.lrTeethDiffLastEntry		:=	TO_UINT(TeethCountLastSort);
+														(* cam xchange / phasing starts on array index 1 *)
+														AxisPhasingCAM.lrTeethDiff[0]					:=	0;
+														AxisPhasingCAM.lrTeethDiff[TeethCounterLast-1]	:=	PitchXPositionsArray[TeethCounterLast].DeviationDEG;
+														AxisPhasingCAM.lrTeethDiff[TeethCounterLast]	:=	PitchXPositionsArray[TeethCounterLast-1].DeviationDEG;
+														(*AxisPhasingCAM.lrTeethDiff[TeethCounterLast-1]	:=	PitchXPositionsArray[TeethCounterLast].DeviationDEG * (-1.0);
+														AxisPhasingCAM.lrTeethDiff[TeethCounterLast]	:=	PitchXPositionsArray[TeethCounterLast-1].DeviationDEG * (-1.0);*)
+
+														(* no positioning for x-startpos necessary *)
+														AxisPhasingCAM.XAxisStartPosOffsetDEGTK			:=	(PitchXPositionsArray[TeethCounterLast-1].CalcToothPitchDEG * (-1.0)) + (PitchXPositionsArray[TeethCounterLast].CalcToothPitchDEG * (-1.0));
+												END_IF;
+										END_IF;
+									ELSE
+										(* ClockWise *)
+
+										Move2Left				:=	FALSE;
+										Move2LeftCCW			:=	FALSE;
+
+										IF	( NOT Move2Left ) AND
+											( NOT Move2LeftCCW )
+											THEN
+												(* copy tooth pitch for phasing *)
+												(* Phasing *)
+												TeethCounterTemp			:=	1;
+												TeethCounterPhasing			:=	0;
+												AxisPhasingCAM.lrTeethDiff[0]	:=	0;
+
+												FOR	TeethCounterTemp	:=	1 TO TO_INT(TeethCounterLast)
+														DO
+															AxisPhasingCAM.lrTeethDiff[TeethCounterTemp]	:=	PitchXPositionsArray[TeethCounterTemp].DeviationDEG * (-1.0);
+												END_FOR;
+
+												(* no positioning for x-startpos necessary *)
+												AxisPhasingCAM.XAxisStartPosOffsetDEGTK			:=	0;
+											ELSE
+												IF	Move2Left
+													THEN
+														;
+												END_IF;
+												IF	Move2LeftCCW
+													THEN
+														;
+												END_IF;
+										END_IF;
+								END_IF;
+					END_IF;
+
+					(*Transition*)
+					IF	StepAction AND
+					    	( NOT StepActionImpulse ) AND
+						(* clockwise *)
+						( ( ( TeethCounterTemp &gt; (TeethCountLastSort + 1) ) AND
+						( MachineCtrl.ProcessTemp.ActualJobData.OperatingDirection.Following =  OperatingDirection.ClockWise  ) ) OR
+						(* counterclockwise *)
+						(*( ( TeethCounterTemp &gt; (TeethCounterLast-2) ) AND*)
+						( ( TeethCounterTemp &lt; 1 ) AND
+						( MachineCtrl.ProcessTemp.ActualJobData.OperatingDirection.Following =  OperatingDirection.CounterClockWise  ) ) )
+						THEN
+							StepNew										:=	110; (*99;*)	(* end *)
+					END_IF;
+
+			(*-------------------------------------------------------Wait for User Interacton-------------------------------------------------*)
+
+			(*----------------------------------------------------------------------------------------------------------------------------------------*)
+			110:		(*Transition*)
+
+					FOR CounterCba := 1 TO TO_INT(TeethNumber )DO
+
+						AxisPhasingCAM.CbaTeethDiff[CounterCba] := PitchXPositionsArray[CounterCba].DeviationDEG *(-1);
+
+					END_FOR;
+
+					IF	StepAction AND
+					     	( NOT StepActionImpulse )
+						THEN
+							StepNew			:=	120;
+							IF	 (UI.MachineSpecification.Base.MachineType = KSC710T)
+								THEN
+									ZposAfterLB	:=	Axis[AxisNo.ZAxis].NcToPlc.ActPos +150;		(*Move Z-Axis Dwn Before Sharpening*)
+								ELSIF  (UI.MachineSpecification.Base.MachineType = SolutionK850T)
+									THEN
+									ZposAfterLB	:=	AxisCtrl[2].Feedback.InputOutput.NcActualPosition +150;
+							END_IF;
+					END_IF;
+
+			(* Write Results of test positionning *)
+			120:
+
+					Duration			:=	TonDuration.ET;
+					bExecute		:=	TRUE;
+					WaitingCsvFile	:=	TRUE;
+					StepNew			 :=	124;
+
+			124:
+					(*Transition*)
+					IF	StepAction AND
+					     	( NOT StepActionImpulse ) AND
+						bExecute AND
+						(NOT FBTkPositionningResults.Busy)
+						THEN
+							bExecute		:=	FALSE;
+							StepNew			 :=	1250;
+					END_IF;
+	(*###################################Move Z-Axis Dwn####################################*)
+	1250:	(*Action*)
+		IF	StepActionImPulse
+			THEN
+				AxisState	:=	STATE_WAIT_NEWOPERATION;
+				(* Z-axis - move absolute Stopped *)
+				AxisCtrl[AxisNo.ZAxis].Command.OperationMode.CmdPowerOn			:=	TRUE;
+				AxisCtrl[AxisNo.ZAxis].Command.OperationMode.CmdMoveAbsolut		:=	TRUE;
+				AxisCtrl[AxisNo.ZAxis].Command.NominalValue.VeloMoveAbsolut		:=	(*40;*)UI.MachineSpecification.PeripheralBasic.Axis.Z.Velocity.MeasuringToothPitchLB.Fast;
+				AxisCtrl[AxisNo.ZAxis].Command.NominalValue.PositionMoveAbsolut		:=	ZposAfterLB ;
+		END_IF;
+
+		(*Transition Ksc-T*)
+		IF	StepAction AND
+			(NOT StepActionImPulse ) AND
+			(NOT Axis[AxisNo.ZAxis].Status.Disabled) AND
+			( AxisCtrl[AxisNo.ZAxis].feedback.state.ActualFbState = AxisState ) AND
+			(Axis[AxisNo.ZAxis].NcToPlc.ActPos &gt;= ZposAfterLB  ) AND
+			 (UI.MachineSpecification.Base.MachineType = KSC710T) AND
+			(   ZposAfterLB   &gt;=(UI.Order.SawBlade.Diameter +100))
+			THEN
+				StepNew			 :=	1251;
+		END_IF;
+
+
+		(*Transition Solution*)
+		IF	StepAction AND
+			(NOT StepActionImPulse ) AND
+			(AxisCtrl[2].Feedback.InputOutput.NcActualPosition &gt;= ZposAfterLB  ) AND
+			 (UI.MachineSpecification.Base.MachineType = SolutionK850T) AND
+			(   ZposAfterLB   &gt;=(UI.Order.SawBlade.Diameter +100))
+			THEN
+				StepNew			 :=	1251;
+		END_IF;
+
+	(*---------------------------------------------------------------Wait For Next Step-----------------------------------------------*)
+	1251:(*Transition*)
+		IF	RTrigNextStep.Q OR
+			Next
+			THEN
+				StepNew			 :=	1252;
+		END_IF;
+	(*------------------------------------------------------------Move Light Barrier To Home Position -------------------------*)
+	1252:(*Action*)
+			IF	StepActionImPulse
+				THEN
+					MachineCtrl.Peripheral.LightBarrier.LinearUnit.CmdHomePos	:=	TRUE;
+					MachineCtrl.Peripheral.LightBarrier.LinearUnit.CmdWorkPos	:=	FALSE;
+			END_IF;
+		(*Transition*)
+			IF	StepAction AND
+				(NOT StepActionImPulse) AND
+				MachineCtrl.State.LightBarrier.LinearUnit.InHomePosition
+				THEN
+					StepNew			 :=	1253;
+			END_IF;
+	(*---------------------------------------------------------------Wait For Next Step-----------------------------------------------*)
+	1253:	(*Transition*)
+			IF	RTrigNextStep.Q OR
+				Next
+				THEN
+					StepNew			 :=	1254;
+					NextPosx1		:=	XPositionAfterAutoTouch - 360	; (*+
+										UI.MachineSpecification.PeripheralBasic.Axis.X.GearBacklash*) ;
+			END_IF;
+	(*---------------------------------------------------------------Move X Axis To Start Position.---------------------------*)
+	1254:
+		IF	StepActionImPulse
+			THEN
+				AxisCtrl[AxisNo.XAxis].Command.OperationMode.CmdPowerOn			:=	TRUE;
+				AxisCtrl[AxisNo.XAxis].Command.OperationMode.CmdMoveAbsolut		:=	TRUE;
+				AxisCtrl[AxisNo.XAxis].Command.ExternalControl.Override				:=	5;
+				AxisCtrl[AxisNo.XAxis].Command.OperationMode.CmdJog				:=	FALSE;
+				AxisCtrl[AxisNo.XAxis].Command.NominalValue.VeloMoveAbsolut		:=	( 360.0 * UI.MachineSpecification.PeripheralBasic.Axis.X.Velocity.MeasuringToothPitchLB.Fast ) / CircumferenceSawBlade;	(*XAxisVelocityMeasurValue;	(*20;*)*)
+				AxisCtrl[AxisNo.XAxis].Command.NominalValue.PositionMoveAbsolut		:=	NextPosx1;
+		END_IF;
+
+		(*Transition*)
+		IF	Axis[AxisNo.XAxis].Status.StandStill AND
+			StepAction AND
+			(NOT StepActionImPulse) AND
+			Axis[AxisNo.XAxis].Status.InTargetPosition
+			THEN
+				StepNew			:=	1255;
+				bTonWaitingX	:=	TRUE;
+		END_IF;
+
+	1255:
+		(*Transition*)
+		IF	StepAction AND
+			(NOT StepActionImPulse) AND
+			TonWaitingX.Q
+			THEN
+				StepNew		:=	12560;
+				NextPosx1	:=	NextPosx1 + 0.3 * ToothPitch;;
+				bTonWaitingX:=	FALSE;
+		END_IF;
+
+	12560:
+
+	IF	StepActionImPulse
+		THEN
+			AxisCtrl[AxisNo.XAxis].Command.OperationMode.CmdPowerOn			:=	TRUE;
+			AxisCtrl[AxisNo.XAxis].Command.OperationMode.CmdMoveAbsolut		:=	TRUE;
+			AxisCtrl[AxisNo.XAxis].Command.ExternalControl.Override				:=	100;
+			AxisCtrl[AxisNo.XAxis].Command.OperationMode.CmdJog				:=	FALSE;
+			AxisCtrl[AxisNo.XAxis].Command.NominalValue.VeloMoveAbsolut		:=	XAxisVelocityMeasurValue;
+			AxisCtrl[AxisNo.XAxis].Command.NominalValue.PositionMoveAbsolut		:=	NextPosx1;
+	END_IF
+		(*Transition*)
+		IF	Axis[AxisNo.XAxis].Status.StandStill AND
+			StepAction AND
+			(NOT StepActionImPulse) AND
+			Axis[AxisNo.XAxis].Status.InTargetPosition (*  AND
+			(Axis[AxisNo.XAxis].NcToPlc.ActPos &gt;= NextPosx1)  *)
+			THEN
+				StepNew		:=	1256;
+		END_IF;
+
+	1256:
+		(*Transition*)
+		IF	StepActionImPulse
+			THEN
+				AxisState	:=	STATE_WAIT_NEWOPERATION;
+				(* Z-axis - move absolute Stopped *)
+				AxisCtrl[AxisNo.ZAxis].Command.OperationMode.CmdPowerOn					:=	TRUE;
+				AxisCtrl[AxisNo.ZAxis].Command.OperationMode.CmdMoveAbsolut				:=	TRUE;
+				AxisCtrl[AxisNo.ZAxis].Command.NominalValue.VeloMoveAbsolut				:=	30;
+				AxisCtrl[AxisNo.ZAxis].Command.NominalValue.PositionMoveAbsolut				:=	UI.Order.SawBlade.Diameter ;
+				AxisCtrl[AxisNo.ZAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe	:=	TRUE;
+		END_IF;
+
+
+		(*KSC T*)
+		IF	StepAction AND
+			(NOT StepActionImPulse ) AND
+			(NOT Axis[AxisNo.ZAxis].Status.Disabled) AND
+			Axis[AxisNo.ZAxis].Status.InTargetPosition AND
+			( AxisCtrl[AxisNo.ZAxis].feedback.state.ActualFbState = AxisState ) AND
+			 (UI.MachineSpecification.Base.MachineType = KSC710T)
+			THEN
+				StepNew		:=	1257;
+				AxisCtrl[AxisNo.ZAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe			:=	FALSE;
+		END_IF;
+
+		(*Solution*)
+
+		IF	StepAction AND
+			(NOT StepActionImPulse ) AND
+			 (UI.MachineSpecification.Base.MachineType = SolutionK850T) AND
+			 (AxisCtrl[2].Feedback.InputOutput.NcActualPosition &lt;=  (UI.Order.SawBlade.Diameter+0.5))  AND
+			 (AxisCtrl[2].Feedback.InputOutput.NcActualPosition &gt;=  (UI.Order.SawBlade.Diameter- 0.5))
+			THEN
+				StepNew		:=	1257;
+				AxisCtrl[AxisNo.ZAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe			:=	FALSE;
+		END_IF;
+
+		IF 	StepAction AND
+			(NOT StepActionImPulse) AND
+			(NOT AxisCtrl[AxisNo.ZAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe )
+			THEN
+				IF	( AxisCtrl[AxisNo.ZAxis].Feedback.State.TouchProbe.ActiveAndAxisStopped)
+					THEN
+						AxisCtrl[AxisNo.ZAxis].Command.OperationMode.CmdMoveAbsolut				:=	FALSE;
+						StepNew		:= 1000; (*Error Out*)
+						AxisCtrl[AxisNo.ZAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe	:=	FALSE;
+				END_IF;
+		END_IF;
+	(*---------------------------------------------------------------Wait For Next Step-----------------------------------------------*)
+	1257:
+		(*Transition*)
+		IF	(RTrigNextStep.Q OR
+			Next) AND
+			(
+			((Axis[AxisNo.ZAxis].NcToPlc.ActPos &lt;=  UI.Order.SawBlade.Diameter) AND
+			 (UI.MachineSpecification.Base.MachineType = KSC710T)) OR
+			((AxisCtrl[2].Feedback.InputOutput.NcActualPosition &lt;=  UI.Order.SawBlade.Diameter) AND
+			 (UI.MachineSpecification.Base.MachineType = SolutionK850T))
+
+			)
+			THEN
+				StepNew		:=	1258;
+		END_IF;
+	(*--------------------------------------------------------------Start Grinding Wheel--------------------------------------------*)
+	1258:
+
+		IF	StepActionImPulse
+			THEN
+				MachineCtrl.Peripheral.GrindingWheel.unit.man.CmdOn		:=	FALSE;
+				MachineCtrl.Peripheral.GrindingWheel.Unit.Auto.CmdOn		:=	TRUE;
+				MachineCtrl.Peripheral.GrindingWheel.Unit.Auto.CmdOff		:=	FALSE;
+		END_IF;
+
+		(* transition:  *)
+		IF	StepAction AND
+			(NOT StepActionImPulse) AND
+			(* grinding wheel is running *)
+			( NOT MachineCtrl.Peripheral.GrindingWheel.Unit.Auto.CmdOn ) AND
+			MachineCtrl.state.GrindingWheel.Unit.IsActive
+			THEN
+				StepNew	:=	1259;
+		END_IF;
+
+	1259:
+
+		IF	RTrigNextStep.Q OR
+			Next
+			THEN
+				StepNew		:=	1260;
+		END_IF;
+
+
+		(*Action*)
+	(*1260 : ORIG	IF	StepActionImPulse
+			THEN
+				IF	MachineCtrl.State.LightBarrier.LinearUnit.InHomePosition
+					THEN
+						AxisState																	:=	STATE_WAIT_NEWOPERATION;
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdPowerOn						:=	TRUE;
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut					:=	TRUE;
+						AxisCtrl[AxisNo.YAxis].Command.NominalValue.VeloMoveAbsolut					:=	UI.MachineSpecification.PeripheralBasic.Axis.Y.Velocity.MoveAbsTPFast;(*5;*)		(*  mm / second *)
+						AxisCtrl[AxisNo.YAxis].Command.NominalValue.PositionMoveAbsolut					:=	YDwnPosition   ; (*ToothfaceTouchPos*)
+						AxisCtrl[AxisNo.YAxis].Command.ExternalControl.Override							:=	100;
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe		:= 	TRUE;
+				END_IF;
+		END_IF
+
+		IF	 (Axis[AxisNo.YAxis].NcToPlc.ActPos &gt;= (YDwnPosition - 7))
+			THEN
+				AxisCtrl[AxisNo.YAxis].Command.NominalValue.VeloMoveAbsolut					:=	UI.MachineSpecification.PeripheralBasic.Axis.Y.Velocity.MoveAbsTPSlow;
+		END_IF;
+
+		(*Transition*)
+		IF	StepAction AND
+		         NOT StepActionImpulse AND
+			Axis[AxisNo.YAxis].Status.InTargetPosition AND
+			( AxisCtrl[AxisNo.YAxis].feedback.state.ActualFbState = AxisState ) AND
+			(NOT AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut)
+			THEN
+				StepNew		:=	1270;
+				AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe	:=	FALSE;
+		END_IF;
+
+		IF	StepAction AND
+		         NOT StepActionImpulse AND
+			 NOT AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe
+			THEN
+			(*CompleteTouchOn*)
+				IF 	AxisCtrl[AxisNo.YAxis].Feedback.State.TouchProbe.ActiveAndAxisStopped
+					THEN
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut				:=	FALSE;
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe	:=	FALSE;
+						StepNew		:=	1000;
+				END_IF;
+		END_IF;  *)
+
+	(*-------------------------------------------------New----------------------------------------------------*)
+	1260:
+		IF	StepActionImPulse
+			THEN
+				IF	MachineCtrl.State.LightBarrier.LinearUnit.InHomePosition
+					THEN
+						AxisState																	:=	STATE_WAIT_NEWOPERATION;
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdPowerOn						:=	TRUE;
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut					:=	TRUE;
+						AxisCtrl[AxisNo.YAxis].Command.NominalValue.VeloMoveAbsolut					:=	 UI.MachineSpecification.PeripheralBasic.Axis.Y.Velocity.MeasuringToothPitchLB.Fast;(*10;*)		(*  mm / second *)
+						AxisCtrl[AxisNo.YAxis].Command.NominalValue.PositionMoveAbsolut					:=	YDwnPosition - 3  ; (*ToothfaceTouchPos*)
+						AxisCtrl[AxisNo.YAxis].Command.ExternalControl.Override							:=	100;
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe		:= 	TRUE;
+				END_IF;
+		END_IF
+
+
+		(*Transition*)
+		IF	StepAction AND
+		         NOT StepActionImpulse AND
+			Axis[AxisNo.YAxis].Status.InTargetPosition AND
+			( AxisCtrl[AxisNo.YAxis].feedback.state.ActualFbState = AxisState ) AND
+			(NOT AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut)
+			THEN
+				StepNew		:=	1263;
+				AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe	:=	FALSE;
+				AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut				:=	 FALSE;
+				bTonWaitingY		:=	TRUE;
+		END_IF;
+
+		IF	StepAction AND
+		         NOT StepActionImpulse AND
+			 NOT AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe
+			THEN
+			(*CompleteTouchOn*)
+				IF 	AxisCtrl[AxisNo.YAxis].Feedback.State.TouchProbe.ActiveAndAxisStopped
+					THEN
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut				:=	FALSE;
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe	:=	FALSE;
+						StepNew		:=	1000;
+				END_IF;
+		END_IF;
+
+
+	1263:
+
+
+		IF	TonWaitingY.Q
+			THEN
+				StepNew			:=	1265;
+				bTonWaitingY	:=	FALSE;
+		END_IF;
+
+
+	1265:
+
+		IF	StepActionImPulse
+			THEN
+				IF	MachineCtrl.State.LightBarrier.LinearUnit.InHomePosition
+					THEN
+						AxisState																	:=	STATE_WAIT_NEWOPERATION;
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdPowerOn						:=	TRUE;
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut					:=	TRUE;
+						AxisCtrl[AxisNo.YAxis].Command.NominalValue.VeloMoveAbsolut					:=	UI.MachineSpecification.PeripheralBasic.Axis.Y.Velocity.MeasuringToothPitchLB.Slow; (*1*)
+						AxisCtrl[AxisNo.YAxis].Command.NominalValue.PositionMoveAbsolut					:=	YDwnPosition    ; (*ToothfaceTouchPos*)
+						AxisCtrl[AxisNo.YAxis].Command.ExternalControl.Override							:=	100;
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe		:= 	TRUE;
+				END_IF;
+		END_IF
+
+
+		(*Transition*)
+		IF	StepAction AND
+		         NOT StepActionImpulse AND
+			Axis[AxisNo.YAxis].Status.InTargetPosition AND
+			( AxisCtrl[AxisNo.YAxis].feedback.state.ActualFbState = AxisState ) AND
+			(NOT AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut)
+			THEN
+				StepNew		:=	1270;
+				AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe	:=	FALSE;
+				AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut				:=	 FALSE;
+		END_IF;
+
+		IF	StepAction AND
+		         NOT StepActionImpulse AND
+			 NOT AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe
+			THEN
+			(*CompleteTouchOn*)
+				IF 	AxisCtrl[AxisNo.YAxis].Feedback.State.TouchProbe.ActiveAndAxisStopped
+					THEN
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut				:=	FALSE;
+						AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe	:=	FALSE;
+						StepNew		:=	1000;
+				END_IF;
+		END_IF;
+
+	(*-------------------------------------------------New----------------------------------------------------*)
+
+	1270:
+
+		IF	RTrigNextStep.Q OR
+			Next
+			THEN
+				StepNew		:=	1275;	(* 1260; *)
+		END_IF;
+
+	1275:
+
+		IF	StepActionImPulse
+			THEN
+				AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe		:= 	FALSE;
+				AxisCtrl[AxisNo.XAxis].Command.NominalValue.PositionMoveAbsolut					:= 	Axis[AxisNo.XAxis].NcToPlc.ActPos - (0.4 * ToothPitch);
+
+				AxisCtrl[AxisNo.XAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe		:= 	TRUE;
+				AxisCtrl[AxisNo.XAxis].Command.OperationMode.CmdMoveAbsolut					:=	TRUE;
+				IF	 (MachineCtrl.ProcessTemp.ActualOrderStackBuffer.ActualOrder.SawBlade.Model='HighSpeedSteel')
+					THEN
+						fXTouchVelo															:=	FC_MM2DEG(SawBladeDiameter := MachineCtrl.ProcessTemp.ActualOrderStackBuffer.ActualOrder.SawBlade.Diameter,
+																								MM := UI.MachineSpecification.PeripheralBasic.Axis.X.Velocity.MeasuringToothPitchLB.Slow*0.5);
+						AxisCtrl[AxisNo.XAxis].Command.NominalValue.VeloMoveAbsolut			:=	fXTouchVelo;    (*5*)
+				END_IF;
+
+				IF	(MachineCtrl.ProcessTemp.ActualOrderStackBuffer.ActualOrder.SawBlade.Model='Cermet')
+					THEN
+						fXTouchVelo															:=	FC_MM2DEG(SawBladeDiameter := MachineCtrl.ProcessTemp.ActualOrderStackBuffer.ActualOrder.SawBlade.Diameter,
+																							MM := UI.MachineSpecification.PeripheralBasic.Axis.X.Velocity.TouchingCermet.Slow(*0.35*));
+						AxisCtrl[AxisNo.XAxis].Command.NominalValue.VeloMoveAbsolut			:=	fXTouchVelo;  (*1*)
+				END_IF;
+
+
+				IF	 (MachineCtrl.ProcessTemp.ActualOrderStackBuffer.ActualOrder.SawBlade.Model='Carbide')
+					 THEN
+						fXTouchVelo															:=	FC_MM2DEG(SawBladeDiameter := MachineCtrl.ProcessTemp.ActualOrderStackBuffer.ActualOrder.SawBlade.Diameter,
+																							MM :=	UI.MachineSpecification.PeripheralBasic.Axis.X.Velocity.TouchingCarbide.Slow (*0.8*));
+						AxisCtrl[AxisNo.XAxis].Command.NominalValue.VeloMoveAbsolut			:=	fXTouchVelo;  (*1*)
+				END_IF;
+		END_IF;
+
+		(* transition:  *)
+		IF	StepAction AND
+			(NOT StepActionImPulse) AND
+			(* Complete touch movement *)
+			NOT AxisCtrl[AxisNo.XAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe
+			THEN
+				(*CompleteTouchOn*)
+				IF AxisCtrl[AxisNo.XAxis].Feedback.State.TouchProbe.ActiveAndAxisStopped
+					THEN
+						XStartPos	:=	Axis[AxisNo.XAxis].NcToPlc.ActPos;;
+						AxisCtrl[AxisNo.XAxis].Command.OperationMode.CmdMoveAbsolut	:=	FALSE;
+						StepNew		:=	1280;
+				END_IF;
+		END_IF;
+
+
+	1280:
+
+		IF	RTrigNextStep.Q OR
+			Next
+			THEN
+				StepNew		:=	1285;	(* 1260; *)
+		END_IF;
+
+	(*###########################################################################################*)
+	1285:
+
+		IF	StepActionImPulse
+			THEN
+				AxisState																	:=	STATE_WAIT_NEWOPERATION;
+				AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdPowerOn						:=	TRUE;
+				AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut					:=	TRUE;
+				AxisCtrl[AxisNo.YAxis].Command.NominalValue.VeloMoveAbsolut					:=	 UI.MachineSpecification.PeripheralBasic.Axis.Y.Velocity.MeasuringToothPitchLB.Fast;;(*5;*)		(*  mm / second *)
+				AxisCtrl[AxisNo.YAxis].Command.NominalValue.PositionMoveAbsolut					:=	YPositonUpPosition ; (*ToothfaceTouchPos*)
+				AxisCtrl[AxisNo.YAxis].Command.ExternalControl.Override							:=	100;
+				AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolutTouchProbe		:= 	FALSE;
+		END_IF
+		(*Transition*)
+		IF	StepAction AND
+		         NOT StepActionImpulse AND
+			Axis[AxisNo.YAxis].Status.InTargetPosition AND
+			( AxisCtrl[AxisNo.YAxis].feedback.state.ActualFbState = AxisState ) AND
+			(Axis[AxisNo.YAxis].NcToPlc.ActPos &lt;=YPositonUpPosition) AND
+			(NOT AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut)
+			THEN
+				StepNew		:=	1290;
+		END_IF;
+
+	1290:
+
+		IF	RTrigNextStep.Q OR
+			Next
+			THEN
+				StepNew		:=	125;	(* 1260; *)
+		END_IF;
+
+		(*--------------------------------------------------------------------------Done---------------------------------------------------------------------*)
+
+	125:
+			Done										:=	TRUE;
+			Busy										:=	FALSE;
+			StartAutoPostionningTK						:=	FALSE;
+			MachineCtrl.Peripheral.LightBarrier.TkMeasuring	:=	FALSE;
+
+			StepNew			 :=	10;
+
+	126:
+			StepNew			 :=	130;
+
+	(*#######################ErrorOut#################*)
+	130:
+
+		(*	StepNew					:=	0;*)
+			StartAutoPostionningTK	:=	FALSE;
+			Busy					:=	FALSE;
+			bExecute				:=	FALSE;
+			WaitingCsvFile			:=	FALSE;
+			Done					:=	FALSE;
+
+	1000:
+
+		IF	StepActionImPulse
+			THEN
+				AxisState																	:=	STATE_WAIT_NEWOPERATION;
+				AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdPowerOn						:=	TRUE;
+				AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut					:=	TRUE;
+				AxisCtrl[AxisNo.YAxis].Command.NominalValue.VeloMoveAbsolut					:=	 UI.MachineSpecification.PeripheralBasic.Axis.Y.Velocity.MeasuringToothPitchLB.Fast;;(*5;*)		(*  mm / second *)
+				AxisCtrl[AxisNo.YAxis].Command.NominalValue.PositionMoveAbsolut					:=	 0 ; (*ToothfaceTouchPos*)
+				AxisCtrl[AxisNo.YAxis].Command.ExternalControl.Override							:=	100;
+		END_IF
+		(*Transition*)
+		IF	StepAction AND
+		         NOT StepActionImpulse AND
+			Axis[AxisNo.YAxis].Status.InTargetPosition AND
+			( AxisCtrl[AxisNo.YAxis].feedback.state.ActualFbState = AxisState ) AND
+			(NOT AxisCtrl[AxisNo.YAxis].Command.OperationMode.CmdMoveAbsolut) AND
+			AxisCtrl[AxisNo.YAxis].feedback.state.DriveManagment.InRefpointWindow
+			THEN
+				StepNew			:=	5000;
+				ErrorOut			:=	TRUE;
+				bExecute		:=	FALSE;
+				WaitingCsvFile	:=	FALSE;
+		END_IF;
+
+	5000:
+			;
+
+
+
+
+	END_CASE;
+
+	ToothCount	:=	TeethCounter;
+
+	(* !!! ToDo WZ: not necessary in the final version - has to be deleted !!!! *)
+	ACT_TIME();
+
+	(* !!! ToDo WZ: not necessary in the final version - has to be deleted !!!! *)
+	stTimeStartM									:=	stTimeStruct;
+	stTimeEndM									:=	stTimeStruct;
+
+
+	(* !!! ToDo WZ: not necessary in the final version - has to be deleted !!!! *)
+	FBTkPositionningResults( 	sNetId				:=	'' ,
+							sPathName			:= 	'C:\Loroch.UI\Beckhoff\TkPosResults',
+							FileName			:= 	'PositionningNewResults',
+							FileNameExtension	:=	FileNameExtension ,
+							TeethNumber			:=	TO_INT(TeethNumber),
+							bExecute			:= 	bExecute,
+							StartTime			:=	stTimeStartM ,
+							EndTime				:=	stTimeEndM ,
+							TotalDuration			:=	Duration,
+							ActualPitch			:= ,
+							NominalToothPitch	:=	PitchXPositionsArray ,
+							MaxDeviationMM		:=	PitchXPositionsArray ,
+							MaxDeviationDEG		:=	PitchXPositionsArray ,
+							LargestDeviationMM	:=	LargestDeviationMM,
+							LargestDeviationDeg	:=	LargestDeviationDEG,
+							Busy=&gt; ,
+							Done=&gt;,
+							Error=&gt; ,
+							ErrId=&gt; );
+
+
+		(* !!! ToDo WZ: warnings in new actions please *)
+		WarningPlausibility(	Enable				:=	FALSE,
+							EventCondition		:=	ValueNotPlausible  ,
+							EventMonTime		:= 	TIME#0s,
+							EventNumber			:=	EvMeasurinValueNotPlausible ,
+							EventReset			:= 	FALSE,
+							EventQuitRequired	:= 	FALSE,
+							EventData			:=	''(*sValueNotPlausible*)     ,
+							EventPriority			:=	0 ,
+							EventSourceId		:= 	2,
+							EventClass			:=	TcEventClassWarning ,
+							EventOut				=&gt;	 ,
+							EventId				=&gt; );
+
+	WarningUnexpectedTouch(	Enable				:=	FALSE,
+							EventCondition		:=	(NOT  ValueNotPlausible ) AND
+													ErrorOut,
+							EventMonTime		:= 	TIME#0s,
+							EventNumber			:=	EvUnexpectedTouch ,
+							EventReset			:= 	FALSE,
+							EventQuitRequired	:= 	FALSE,
+							EventData			:=	''     ,
+							EventPriority			:=	0 ,
+							EventSourceId		:= 	2,
+							EventClass			:=	TcEventClassWarning ,
+							EventOut				=&gt;	 ,
+							EventId				=&gt; );
+
+
+
+
+	(*##########################################################################################*)
+
+
+	ActualToothTemp		:=	TO_INT(TeethCounter);
+
+
+
+
+
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK Tk_MeasuringWithLB
+			(*--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+			--------------------------------------------------------------------------------------------------------------------------------------------------------*)
+	VAR_INPUT
+			CheckPlausibilityActive				:	BOOL;		(* Variable  to check for plausibility*)
+			XAxisVelocityMeasurValue			:	LREAL;
+			fMeanToothPitchDegree			:	LREAL;
+			TeethNumber						:	UINT;			(*UINT Nominal Teeth Number *)
+			StartAutoPostionningTK			:	BOOL;		(* Start The SFC*)
+			XPositionAfterAutoTouch			:	LREAL;		(* X  position after auto touching *)
+			YPositionAfterAutoTouch			:	LREAL;		(* Y position after auto touching *)
+			YPositonUpPosition				:	LREAL;
+			YDwnPosition						:	LREAL;		(* Y Down Position *)
+			fXPosToothFaceTouchPosGrd		:	LREAL;
+			Reset							:	BOOL;
+			SawBladeDiameter				:	LREAL;
+			VarioToothActive					:	BOOL;
+			NumberOfTeethPerShape			:	INT;
+			NumberOfShape					:	INT;
+			(*Plausibility*)
+			DifferenceMaxAllowed				:	REAL;		(*Value bigger than this value will cause Error and Stop*)
+	END_VAR
+
+	VAR_OUTPUT
+			Done							:	BOOL;
+			Busy							:	BOOL;
+			ActualStep						:	INT;
+			ErrorOut							:	BOOL;
+			ToothCount						:	UINT;							(* actual tooth count during process *)
+			XStartPos						:	LREAL;
+			ActualToothTemp					:	INT;
+	END_VAR
+
+	VAR
+			SfcPositioningAutoTouch			:	FB_SUBFUNC_SEQ_CONTROL;	(* FB sfc *)
+			XStartPosition						:	LREAL;
+			AxisState						:	E_StateMachineAxis;
+			StepNew							:	INT;
+			(* ToDo WZ: Arrays start alway on zero !!! *)
+			PitchXPositionsArray				:	ARRAY [1..999] OF ST_AutoTouchForTK;
+			ToothPitchArray					:	ARRAY [1..999] OF  LREAL;
+
+			ArrayCounter						:	INT;
+			XPositionAfterAutoTouchTK			:	LREAL;	(* XAxis position after teh test of All teeth  *)
+			XAxisNextPos					:	LREAL;		(* Next X Position *)
+			XAxisTempPos					:	LREAL;
+			ToothPitch						:	LREAL;
+			TeethCounter						:	UINT;
+			TeethCounterPhasing				:	UINT;
+			TeethCounterLast					:	UINT;
+			StepAction						:	BOOL;							(* temp Step action sfc *)
+			StepActionImPulse				:	BOOL;							(* temp Step action impuls sfc *)
+			Diff_First_Last_Tooth				:	LREAL;
+			CircumferenceSawBlade			:	LREAL;
+			ToothPitchMM					:	LREAL;
+			LargestDeviationMM				:	LREAL;
+			LargestDeviationDEG				:	LREAL;
+			CounterVario						:	INT;								(*Counter number of teeth per Group*)
+			CounterShapeNumber				:	INT;								(*Counter Shape Number*)
+			MaxToothPitchVario				:	LREAL;
+			I,J,K								:	INT;								(*3 Int Variable to use with Arrays*)
+			VarioToothPitchDifference			:	LREAL;
+
+			(*  Tooth Pitch Results*)
+			FBTkPositionningResults			:	FB_Tk_PositionningResults;
+			stTimeStruct						: 	TIMESTRUCT;
+			stTimeStartM						: 	TIMESTRUCT;
+			stTimeEndM						: 	TIMESTRUCT;
+			FileNameExtension				:	T_MaxString;
+			fbGetTime						: 	NT_GetTime;
+			bExecute						:	BOOL ; (*Start Result *)
+			RTrigStartWriting					:	R_TRIG;
+			WarningPlausibility				:	FB_SUBFUNC_MESSAGE;
+			WarningUnexpectedTouch			:	FB_SUBFUNC_MESSAGE; (* Unexpected Touching when Y Axis is Moving Dwn*)
+
+			TonWaitingCsvFile				:	TON;
+			WaitingCsvFile					:	BOOL;
+
+			ValueNotPlausible				:	BOOL;
+
+			RTrigNotPlausible					:	R_TRIG;
+
+			TonDuration						:	TON;
+			StartTonDuration					:	BOOL;
+			Duration							:	TIME;
+			sValueNotPlausible				:	STRING;
+			fXTouchVelo						:	LREAL;
+			ValueMM2GradForNextPos			:	LREAL;
+
+			lrTeethDiffMeasuredTemp			: 	ARRAY[0..999] OF LREAL;
+			TeethCounterTemp				:	INT;
+			TeethCountLastSort				:	INT;
+
+			DeviationMMValueNotPlausible		:	LREAL;
+			TeethCounterValueNotPlausible		:	UINT;
+
+			DeviationMMValueMin				:	LREAL;
+			DeviationMMValueMax				:	LREAL;
+			TeethCounterValueMin				:	UINT;
+			TeethCounterValueMax			:	UINT;
+
+			Move2Left						:	BOOL;
+			Move2LeftCCW					:	BOOL;
+			CounterCba						:	INT;
+			RTrigSawBladeIsDetected			:	R_TRIG;
+			ZposAfterLB						:	LREAL;
+			RTrigNextStep					:	R_TRIG;
+			Next								:	BOOL;
+			NextPosx1						:	LREAL;
+			NextPosx2						:	LREAL;
+			TonWaitingX						:	TON;
+			bTonWaitingX					:	BOOL;
+
+			TonWaitingY						:	TON;
+			bTonWaitingY					:	BOOL;
+
+	END_VAR</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>b6a5e0db-2fdb-4568-8e9e-e36d1d1a0b83</ObjectId>
+          </data>
+        </addData>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
+      <ProjectStructure>
+        <Object Name="Tk_MeasuringWithLB" ObjectId="b6a5e0db-2fdb-4568-8e9e-e36d1d1a0b83">
+          <Object Name="ACT_TIME" ObjectId="f8d9bb14-7b8f-45f5-bc00-b51d0a6538c0" />
+        </Object>
+      </ProjectStructure>
+    </data>
+  </addData>
+</project>
