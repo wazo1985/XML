@@ -859,7 +859,7 @@
 				END_IF;
 
 			(*-----------------------------------------------------Wait for The first Impulse----------------------------------------------------*)
-			20:	(*Action*)
+			20:	(*Action*)  6666666666666666666666666666666666
 			IF	RTrigSawBladeIsDetected.Q
 				THEN
 					XStartPosition		:=		Axis[AxisNo.XAxis].NcToPlc.ActPos ;
